@@ -18,7 +18,7 @@ ggplot((data=bb_names %>%
 
 ggplot((data=bb_names %>% filter(name %in% c("Marie","Emma","Hanna","Ana","Jordan"),sex=="F",year==2002)),aes(x=name,y=n))+geom_col()
 
-ggplot((data=bb_names %>% filter(name=="John",sex=="F",year==2003)),aes(x=name,y=n))+geom_col()
+ggplot((data=bb_names %>% filter(name=="Mark",sex=="F",year==2003)),aes(x=name,y=n))+geom_col()
 
 
 ggplot((data=bb_names %>% filter(name %in% c("Marie","Emma","Hanna","Ana","Jordan"),sex=="F",year==2002)),aes(x=name,y=n,fill=name))+geom_col(alpha=0.3)
@@ -28,3 +28,10 @@ the_nineties <- bb_names %>% filter(year>=1990 & year<2000)
 #we got yap sesh tuesday over here
 
 write_csv(the_nineties,"datalab_2024v2.rproj")
+
+ggplot((data=bb_names %>% filter(name %in% c("Joseph","Srijan","Kyle","Gavin"),year==2005)),aes(x=name,y=n,fill=name))+geom_col(alpha=0.3)
+
+srijan05 <- bb_names %>% 
+  filter(name=="Srijan",year==2005)
+
+ggplot((data=bb_names %>% filter(name =="Kyle")),aes(x=year,y=n,col=sex))+geom_line(alpha=1,fill="darkblue",size=1.5)
