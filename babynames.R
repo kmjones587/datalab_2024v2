@@ -27,7 +27,7 @@ the_nineties <- bb_names %>% filter(year>=1990 & year<2000)
 
 #we got yap sesh tuesday over here
 
-write_csv(the_nineties,"datalab_2024v2.rproj")
+#write_csv(the_nineties,"datalab_2024.rproj")
 
 ggplot((data=bb_names %>% filter(name %in% c("Joseph","Srijan","Kyle","Gavin"),year==2005)),aes(x=name,y=n,fill=name))+geom_col(alpha=0.3)
 
