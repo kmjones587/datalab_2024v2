@@ -1,0 +1,72 @@
+---
+title: "Sewanee Climate Report"
+author: "Kyle Jones and friends"
+date: "2024-06-12"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introduction
+
+Analyzing the climate of Sewanee is very important and with this data we hope to specifically analyze:
+
+- How minimum and maximum temperatures have changed over time
+- How the average temperature has changed over time
+- How snowfall has changed over time for the entire period
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning=FALSE,message=FALSE)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+#nums 3 and 5 Min/max temp over time whole period, and avg temp over time
+sw <- read_csv("D:/kyle_datalab/datalab_2024v2/climate/weather.csv")
+
+sw1 <- sw %>% select(DATE,TMIN,TMAX) %>% mutate(AVGTEMP=(TMIN+TMAX)/2)
+
+sw$DATE <- as.Date(sw$DATE)
+
+sw2 <- sw %>% mutate(dateyr=(format(DATE, "%Y")))
+#3
+ggplot(data=sw2,aes(x=dateyr,y=TMIN)) + geom_col()
+
+ggplot(data=sw2,aes(x=dateyr,y=TMAX)) + geom_col()
+#5
+ggplot(data=sw2,aes(x=dateyr,y=AVGTEMP))+geom_col()
+
+sw2 <- sw2 %>% mutate(avgtmax = sum(TMAX)/9556,avgtmin=mean(TMIN))
+
+
+
+```
+
+## How minimum temperature and maximum temperature has changed over time:
+```{r}
+ggplot(data=sw1,aes(x=DATE,y=TMIN),na.rm=TRUE) + geom_col()+labs(x="Date",y="Minimum Temperature",title="Minimum Temperature vs. Date")
+
+ggplot(data=sw1,aes(x=DATE,y=TMAX),na.rm=TRUE) + geom_col()+labs(x="Date",y="Maximum Temperature",title="Maximum Temperature vs. Date")
+
+ggplot(data=sw2,aes(x=dateyr,y=avgtmin),na.rm=TRUE)+geom_col()
+
+
+
+
+
+
+```
+
+## How average temperature has changed over time:
+```{r}
+ggplot(data=sw1,aes(x=DATE,y=AVGTEMP),na.rm=TRUE)+geom_col()+labs(x="Date",y="Average Temperature",title="Average Temperature vs. Date")
+```
+
+## How snowfall has changed over time
+```{r}
+
+#sw2 <- sw %>% 
+
+#ggplot(data=sw2,aes(x=DATE,y=SNOW))+geom_col()
+```
+
+

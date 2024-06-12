@@ -1,0 +1,153 @@
+---
+title: "climate report thing"
+author: "Kyle Jones"
+date: "2024-06-12"
+output: html_document
+---
+
+# Introduction
+
+This is all Gabe's code I was really struggling to piece it all together
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,message=FALSE,warning=FALSE)
+library(tidyverse)
+library(sf)
+library(tmap)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rnaturalearthhires)
+
+weather <- read_csv('weather.csv')
+head(weather)
+```
+
+
+```{r}
+y2000 <- weather %>% filter(year(DATE) <= 2005)
+y2005 <- weather %>% filter(year(DATE) > 2005 & year(DATE) <= 2010)
+y2010 <- weather %>% filter(year(DATE) > 2010 & year(DATE) <= 2015)
+y2015 <- weather %>% filter(year(DATE) > 2015 & year(DATE) <= 2020)
+
+ggplot(data = y2000, aes(x = DATE, y = TMAX)) + 
+  geom_point() + 
+  labs(title = "Temperature Data up to 2005", x = "Date", y = "Max Temperature (TMAX)")
+```
+
+```{r}
+ggplot(data = y2005, aes(x = DATE, y = TMAX)) + 
+  geom_point() + 
+  labs(title = "Temperature Data from 2006 to 2010", x = "Date", y = "Max Temperature (TMAX)")
+```
+
+```{r}
+ggplot(data = y2010, aes(x = DATE, y = TMAX)) + 
+  geom_point() + 
+  labs(title = "Temperature Data from 2011 to 2015", x = "Date", y = "Max Temperature (TMAX)")
+```
+
+```{r}
+ggplot(data = y2015, aes(x = DATE, y = TMAX)) + 
+  geom_point() + 
+  labs(title = "Temperature Data from 2016 to 2020", x = "Date", y = "Max Temperature (TMAX)") 
+```
+
+```{r}
+y2000 <- weather %>% 
+  filter(year(DATE) <= 2005) %>% 
+  mutate(Period = "2000-2005")
+
+y2015 <- weather %>% 
+  filter(year(DATE) > 2015 & year(DATE) <= 2020) %>% 
+  mutate(Period = "2015-2020")
+
+combined_data <- bind_rows(y2000, y2015)
+
+ggplot(data = combined_data, aes(x = DATE, y = TMAX, color = Period)) + 
+  geom_point(alpha = 0.8) + 
+  labs(title = "Comparison of Temperature Data: 2000-2005 vs 2015-2020", 
+       x = "Date", 
+       y = "Max Temperature (TMAX)")
+```
+
+```{r}
+ggplot(data = y2000, aes(x = DATE, y = TMIN)) + 
+  geom_point() + 
+  labs(title = "Temperature Data up to 2005", x = "Date", y = "Max Temperature (TMIN)")
+```
+
+```{r}
+ggplot(data = y2005, aes(x = DATE, y = TMIN)) + 
+  geom_point() + 
+  labs(title = "Temperature Data from 2006 to 2010", x = "Date", y = "Max Temperature (TMIN)")
+```
+
+```{r}
+ggplot(data = y2010, aes(x = DATE, y = TMIN)) + 
+  geom_point() + 
+  labs(title = "Temperature Data from 2011 to 2015", x = "Date", y = "Max Temperature (TMIN)")
+```
+
+```{r}
+ggplot(data = y2015, aes(x = DATE, y = TMIN)) + 
+  geom_point() + 
+  labs(title = "Temperature Data from 2016 to 2020", x = "Date", y = "Max Temperature (TMIN)") 
+```
+
+```{r}
+ggplot(data = combined_data, aes(x = DATE, y = TMIN, color = Period)) + 
+  geom_point(alpha = 0.8) + 
+  labs(title = "Comparison of Temperature Data: 2000-2005 vs 2015-2020", 
+       x = "Date", 
+       y = "Max Temperature (TMIN)")
+```
+
+```{r}
+overall_avg_2000 <- y2000 %>% 
+  summarise(
+    avg_TMAX = mean(TMAX, na.rm = TRUE),
+    avg_TMIN = mean(TMIN, na.rm = TRUE)
+  )
+
+overall_avg_2000
+```
+
+```{r}
+overall_avg_2015 <- y2015 %>% 
+  summarise(
+    avg_TMAX = mean(TMAX, na.rm = TRUE),
+    avg_TMIN = mean(TMIN, na.rm = TRUE)
+  )
+overall_avg_2015
+```
+
+```{r}
+tempp <- weather %>% 
+  group_by(year = year(DATE)) %>% 
+  summarise(
+    avg_TMAX = mean(TMAX, na.rm = TRUE),
+    avg_TMIN = mean(TMIN, na.rm = TRUE)
+  )
+
+
+
+ggplot() +
+  geom_line(data = tempp, aes(x = year, y = avg_TMAX, color = "avg_TMAX"), size = 0.8) +
+  geom_line(data = tempp, aes(x = year, y = avg_TMIN, color = "avg_TMIN"), size = 0.8) +
+  labs(title = "Yearly Average Max and Min Temperatures", 
+       x = "Year", 
+       y = "Average Temperature", 
+       color = "Temperature Type")
+```
+
+```{r}
+tempp <- tempp %>% 
+  mutate( avgtemp = (avg_TMIN + avg_TMAX) / 2 )
+
+ggplot() +
+  geom_line(data = tempp, aes(x = year, y = avgtemp), size = 0.8) +
+  labs(title = "Yearly Average Max and Min Temperatures", 
+       x = "Year", 
+       y = "Average Temperature") 
+```
+
