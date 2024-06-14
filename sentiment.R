@@ -80,45 +80,53 @@ ggplot(data=top10w,aes(x=word,y=n))+geom_col(fill="lightgreen")
 
 # 20. Run the below to join word_freq with sentiments.
 # 
-sentiments1 <- sentiments %>% left_join()
+sentiments1 <- left_join(sentiments,word_freq,by="word") #creates new sentiments1 dataset by left joining sentiments and word frequency by the specific word variable
 
 # 21. Now explore the data. What is going on?
-#   
-
-
+#   Most of the words do not have any particular frequency of use.
 # 22. For the whole survey, were there more negative or positive sentiment words used?
 #   
-
+#there were more positive from a glance.
 
 # 23. Create an object with the number of negative and positive words used for each person.
 # 
+sentiments2 <- sentiments1 %>% #creates new dataset
+  group_by(sentiment) %>% #groups by positive or negative
+  summarise(total_frequency = sum(n, na.rm = TRUE)) %>% #summarizes
+  spread(key = sentiment, value = total_frequency, fill = 0) #makes columns based on frequency of positive or negative?? i think?
 
-
-# 24. In that object, create a new variabled named sentimentality, which is the number of positive words minus the number of negative words.
+# 24. In that object, create a new variable named sentimentality, which is the number of positive words minus the number of negative words.
 # 
-
+sentiments2 <- sentiments2 %>% mutate(sentimentality=positive-negative)
 
 # 25. Make a histogram of senitmentality
 # 
-
+ggplot(data=sentiments2,aes(x=sentimentality))+geom_histogram()
 
 # 26. Make a barplot of sentimentality.
 # 
+ggplot(data=sentiments2,aes(x=sentimentality))+geom_bar()
 
-
-# 27. Create a wordcloud for the dream variable.
-# 
-
+  # 27. Create a wordcloud for the dream variable.
+  # 
+surveydream <- survey1 %>% select(first_name,
+                  dream) %>%
+    unnest_tokens(word, dream) #creates new surveydream dataset of just first names, and words
+  
+surveydream1 <- surveydream %>% group_by(word) %>% tally() #creates new dataset surveydream 1 from surveydream then grouping surveydream by word and tallying in the columns like before
+  
+wordcloud2(surveydream1) #makes a wordcloud
 
 # 28. Create a barplot showing the top 16 words in our dreams.
 # 
-
+dreamtop16 <- head(surveydream1[order(-surveydream1$n),],16)
+ggplot(data=dreamtop16,aes(x=word,y=n))+geom_col(fill="blue")
 
 # 29. Which word showed up most in people’s description of Joe?
 #   
+#"i" followed by "a"
 
-
-#   30. Make a histogram of feeling_num.
+# 30. Make a histogram of feeling_num.
 # 
 
 
